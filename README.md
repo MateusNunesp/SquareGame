@@ -1,6 +1,6 @@
 # FallingSquares 🟥🔵 V1.0
 
-> **Inspiration Note:** This project was heavily inspired by the addictive mobile game **SquareFall**. The goal was to recreate the core mechanics of the original game while expanding it with new features built entirely from scratch for the web.
+> **Inspiration Note:** This project was heavily inspired by the mobile game **SquareFall**. The goal was to recreate the core mechanics of the original game while expanding it with new features built entirely from scratch for the web.
 
 **FallingSquares** is a fast-paced arcade survival game where your reflexes are your best weapon! You control a blue ball orbiting a central circle, constantly moving to dodge an endless barrage of falling red enemies.
 
@@ -32,7 +32,3 @@ The game uses **Object-Oriented Programming (OOP)** to keep the codebase clean, 
 * `Moeda` (Coin): The loot system with its own collision detection.
 * `Loja` (Shop): Manages transactions, validates balances, and injects new abilities into the game through callbacks.
 * `Mapa` (Map): Renders the base environment.
-
-## 🚀 How to Run Locally
-The game runs entirely on the client-side, requiring no server setup or package installations.
-1. Clone this repository: `git clone
