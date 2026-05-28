@@ -4,6 +4,9 @@
 
 **FallingSquares** is a fast-paced arcade survival game where your reflexes are your best weapon! You control a blue ball orbiting a central circle, constantly moving to dodge an endless barrage of falling red enemies.
 
+## 🚀 Play Now
+**[👉 Click here to play FallingSquares directly in your browser!](https://mateusnunesp.github.io/SquareGame/)**
+
 ## 🎮 How to Play
 Survive as long as possible by dodging the enemies (red squares) while collecting coins (yellow circles) to buy perks in the shop.
 
