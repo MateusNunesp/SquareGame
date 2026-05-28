@@ -10,7 +10,7 @@ export class Loja {
 
 
         this.hasStop = false;
-        this.stopPrice = 2;
+        this.stopPrice = 15;
         this.botao.innerText = `🛒 Freio (${this.stopPrice})`;
 
         this.botao.addEventListener('click', () => {
