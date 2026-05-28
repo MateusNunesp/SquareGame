@@ -19,7 +19,7 @@ Survive as long as possible by dodging the enemies (red squares) while collectin
 * **Survive & Adapt:** The difficulty is based purely on your reaction time. The longer you survive, the higher your *Best Time*.
 * **Economy System:** Collect yellow coins that randomly fall across the map.
 * **In-Game Shop:** Spend your hard-earned coins to unlock powerful abilities, like the emergency brake (`Stop`).
-* **Saved Progress:** Your "Best Time" is automatically saved in your browser (via `localStorage`), ensuring your high score is never lost when closing the tab.
+* **Saved Progress:** Your "Best Time" is automatically saved.
 * **Smart Pause:** The game automatically pauses if you switch tabs or minimize the browser, making sure you don't lose an ongoing run unfairly.
 
 ## 🛠️ Tech Stack
