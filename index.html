@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>FallingSquares</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: sans-serif;
+            overflow: hidden; 
+        }
+
+        #telaDividida {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            flex-direction: row; 
+        }
+
+        #menuLateral {
+
+            flex: 0 0 300px; 
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            box-shadow: 2px 0px 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        #placar {
+            font-size: 4rem;
+            font-weight: bold;
+            color: lightgreen;
+            margin: 0;
+        }
+
+        #botao {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #e74c3c;
+            color: white;
+            transition: 0.2s;
+        }
+
+        #botao:hover {
+            background-color: #c0392b;
+        }
+
+
+        #areaJogo {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #87d4e7;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #areaDesenho {
+            width: 100%;
+            max-width: 650px;
+            height: auto;
+        }
+
+        #controles {
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 0.8;
+            color: #ecf0f1;
+        }
+
+
+        #botaoCompra {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #f1c40f;
+            border-radius: 25px;     
+            background-color: #8e44ad;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-top: -20px;
+        }
+
+        #botaoCompra:hover {
+            background-color: #9b59b6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.4);
+        }
+
+        #botaoCompra:active {
+            transform: translateY(1px);
+        }
+
+
+        @media (max-width: 800px) {
+            #telaDividida {
+                flex-direction: column;
+            }
+
+            #menuLateral {
+                flex: 0 0 auto;
+                width: 100%;
+                flex-direction: row;
+                padding: 15px 0;
+                gap: 20px;
+            }
+
+            #menuLateral h1 {
+                display: none;
+            }
+
+            #placar {
+                font-size: 2.5rem;
+            }
+
+            #botao {
+                padding: 10px 25px;
+                font-size: 1.2rem;
+            }
+
+            #controles {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="telaDividida">
+        
+        <div id="menuLateral">
+            <h1>Sobreviva!</h1>
+            <div id="caixaPlacar" style="text-align: center;">
+                <p style="font-size: 1.8rem; font-weight: bold; margin: 10px; color: rgb(212, 13, 169);">
+                    <span id="seta">direção</span>
+                </p>
+                <p style="font-size: 1.8rem; font-weight: bold; margin: 10px; color: lightgreen;">
+                    Tempo: <span id="placarTempo">0</span>s
+                </p>
+                <p style="font-size: 1.8rem; font-weight: bold; margin: 10px; color: lightgreen;">
+                    Melhor Tempo: <span id="melhorTempo">0</span>s
+                </p>
+                <p style="font-size: 1.8rem; font-weight: bold; margin: 10px; color: yellow;">
+                    Moedas: <span id="placarMoedas">0</span>
+                </p>
+            </div>
+            <button id="botao">Play</button>
+            <button id="botaoCompra">🛒 Freio</button>
+
+            <div id="controles">
+                <h3 style="color: #f39c12; margin-bottom: 15px;">Controls</h3>
+                <p><b>G</b> - Invert</p>
+                <p style="display: none" id = 'stop'><b>F</b> - Stop</p>
+            </div>
+        </div>
+
+        <div id="areaJogo">
+            <svg id="areaDesenho" viewBox="-50 -50 300 300"></svg>
+        </div>
+
+    </div>
+
+    <script type="module">
+
+        import { Bola } from './bola.js';
+        import { Quadrado } from './quadrado.js'
+        import { Moeda } from './moeda.js'
+        import { Mapa } from './mapa.js'
+        import { Loja } from './loja.js'
+
+        let gameRunning = false;
+
+        let contadorMoedas = 0;
+        let melhorTempo = 0;
+        let contadorTempo = 0;
+
+
+
+        const area = document.getElementById('areaDesenho');
+        const botao = document.getElementById('botao');
+        const placarTempo = document.getElementById('placarTempo');
+        const placarMoedas = document.getElementById('placarMoedas');
+        const seta = document.getElementById('seta');
+        const areaLoja = document.getElementById('botaoCompra');
+        const avisoStop = document.getElementById('stop');
+
+
+
+        const loja = new Loja(areaLoja,
+            avisoStop,
+            () => contadorMoedas,
+            (valor) => {
+                contadorMoedas -= valor;
+                placarMoedas.innerText = contadorMoedas;
+            }
+        );
+        const mapa = new Mapa(area);
+        const minhaBola = new Bola(area, 0.03);
+
+        let inimigos = [];
+        setInterval(() => {
+            if (gameRunning && !document.hidden) {
+                inimigos.push(new Quadrado(area));
+            }
+        }, 1000);
+
+
+        
+        let moedas = [];
+        setInterval(() => {
+            if (gameRunning && !document.hidden) {
+                moedas.push(new Moeda(area));
+            }
+        }, 1500);
+
+
+
+        function resetarPartida() {
+
+            for(let i = 0; i < inimigos.length; i++){
+                inimigos[i].destruir();
+            }
+            inimigos = [];
+
+            for(let i = 0; i < moedas.length; i++){
+                moedas[i].destruir();
+            }
+            moedas = [];
+
+            if(contadorTempo > melhorTempo) melhorTempo = contadorTempo;
+            document.getElementById('melhorTempo').innerText = melhorTempo;
+            contadorTempo = 0;
+            placarTempo.innerText = contadorTempo;
+
+            botao.innerText = "Play";
+            botao.style.backgroundColor = "#e74c3c";
+
+            minhaBola.resetar();
+        }
+
+
+
+
+        function gameLoop(){
+
+
+            if(gameRunning) {
+                minhaBola.animar();
+
+                // loop dos inimigos
+                for(let i = inimigos.length - 1; i >= 0; i--){
+                    inimigos[i].cair();
+
+                    if(inimigos[i].colisiontest(minhaBola)){
+                        gameRunning = false;
+
+                        requestAnimationFrame(() => {
+                            
+                            resetarPartida();
+                        });
+                    }
+
+                    if (inimigos[i].passouDoFundo()) {
+                        inimigos[i].destruir();
+                        inimigos.splice(i, 1);
+                    }
+                }
+
+
+                //loop das moedas
+                for(let i = moedas.length - 1; i >= 0; i--){
+                    moedas[i].cair();
+
+                    if(moedas[i].colisiontest(minhaBola)){
+
+                        contadorMoedas += moedas[i].valor;
+                        placarMoedas.innerText = contadorMoedas;
+
+                        moedas[i].destruir();
+                        moedas.splice(i, 1);
+                        continue;
+                    }
+
+
+                    if (moedas[i].passouDoFundo()) {
+                        moedas[i].destruir();
+                        moedas.splice(i, 1);
+                    }
+                }
+
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if((event.key === 'g' || event.key === 'G') && gameRunning){
+                minhaBola.changeDirection();
+                atualizarSeta();
+            }
+            if ((event.key === 'f' || event.key === 'F') && gameRunning && loja.hasStop) {
+                minhaBola.togglePause();
+            }
+            if (event.code === 'Space') {
+                event.preventDefault(); 
+                botao.click(); 
+            }
+        });
+
+
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden && gameRunning) {
+                botao.click(); 
+            }
+        });
+
+
+
+
+        
+        setInterval(() => {
+            if(!document.hidden && gameRunning){
+                contadorTempo++;
+                placarTempo.innerText = contadorTempo;
+
+            }
+        }, 1000);
+
+
+
+
+        botao.addEventListener('click', () => {
+            gameRunning = !gameRunning;
+            if (gameRunning) {
+                botao.innerText = "Pause";
+                botao.style.backgroundColor = "#f39c12";
+            } else {
+                botao.innerText = "Play";
+                botao.style.backgroundColor = "#e74c3c";
+            }
+        });
+
+
+
+
+        function atualizarSeta() {
+            if (minhaBola.velocidade > 0) {
+                seta.innerText = "↻ Horário";
+            } else {
+                seta.innerText = "↺ Anti-horário";
+            }
+        }
+
+
+        
+        
+        atualizarSeta();
+        gameLoop()
+    </script>
+</body>
+</html>
